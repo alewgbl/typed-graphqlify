@@ -885,4 +885,32 @@ describe('graphqlify', () => {
       }
     `)
   })
+
+  it('render array params', () => {
+    const queryObject = {
+      user: params(
+        {
+          where: {
+            _or: [
+              { user: { _eq: rawString('Bob') } },
+              { branch: { _eq: rawString('Main Branch') } },
+            ],
+          },
+        },
+        {
+          user: types.string,
+          branch: types.string,
+        },
+      ),
+    }
+    const actual = query(queryObject)
+    expect(actual).toEqual(gql`
+      query {
+        user(where: { _or: [{ user: { _eq: "Bob" } }, { branch: { _eq: "Main Branch" } }] }) {
+          user
+          branch
+        }
+      }
+    `)
+  })
 })
